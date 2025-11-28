@@ -1,5 +1,6 @@
 function GameOver() {
     const gameOverContainer = document.getElementById('game-over');
+    if (!gameOverContainer) return;//если нет то выходим
     const message = document.getElementById('game-over-message');
     const nameInput = document.getElementById('player-name');
     const saveBtn = document.getElementById('save-score-btn');
@@ -42,11 +43,11 @@ function saveScore() {
     leaderboard.push(record);
     
     //сортируем по убыванию
-    leaderboard.sort((a, b) => b.score - a.score);
-
+    const res = leaderboard.sort((a, b) => b.score - a.score);
+    
     
     // Сохраняем обратно в localStorage
-    localStorage.setItem('leaderboard', JSON.stringify(top10));
+    localStorage.setItem('leaderboard', JSON.stringify(res));
     
     console.log('Сохранен результат для:', playerName, ', результат:', score);
 }
@@ -63,7 +64,7 @@ function restartGame() {
 
 //собрать лидерборд
 function loadLeaderboard() {
-    const leaderboard = JSON.parse(localStorage.getItem('2048_leaderboard')) || [];
+    const leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
     const tbody = document.getElementById('leaderboard-body');
     
     if (!tbody) return; //если элемента нет на странице, выходим
