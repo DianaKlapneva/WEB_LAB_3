@@ -54,13 +54,13 @@ function saveScore() {
 
 function restartGame() {
     document.getElementById('game-over').style.display = 'none';
+    if (gameOverContainer) {
+        gameOverContainer.style.display = 'none';
+    }
     // потом продумаю логику перезапуска игры
 }
 
-function restartGame() {
-    document.getElementById('game-over').style.display = 'none';
-    // логика перезапуска игры
-}
+
 
 //собрать лидерборд
 function loadLeaderboard() {
@@ -88,7 +88,19 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('save-score-btn').addEventListener('click', saveScore);
     document.getElementById('restart-btn').addEventListener('click', restartGame);
     
+    if (saveBtn) {
+        saveBtn.addEventListener('click', saveScore);
+    }
+    
+    if (restartBtn) {
+        restartBtn.addEventListener('click', restartGame);
+    }
+    
     loadLeaderboard();
-    //пока что game over просто по таймеру чтобы посмотреть
-    setTimeout(GameOver, 1000);
+
+    //таймер только если уже есть контейнер тк иначе не сохраняется лидерборд
+    const gameOverContainer = document.getElementById('game-over');
+    if (gameOverContainer) {
+        setTimeout(GameOver, 1000);
+    }
 });
