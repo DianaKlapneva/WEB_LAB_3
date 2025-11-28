@@ -28,8 +28,27 @@ function saveScore() {
     message.textContent = 'Ваш рекорд сохранен!';
     saveBtn.textContent = 'Сохранено';
     
-    //сохраним в localstorage
-    console.log('Сохранен результат для:', playerName);
+//cохраняем в localStorage!
+    const score = parseInt(document.getElementById('score').textContent) || 0;
+    const record = {
+        name: playerName,
+        score: score,
+        date: new Date().toLocaleString('ru-RU')
+    };
+    
+    //либо получаем текущий массив либо создаем, если пусто
+    const leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
+
+    leaderboard.push(record);
+    
+    //сортируем по убыванию
+    leaderboard.sort((a, b) => b.score - a.score);
+
+    
+    // Сохраняем обратно в localStorage
+    localStorage.setItem('leaderboard', JSON.stringify(top10));
+    
+    console.log('Сохранен результат для:', playerName, ', результат:', score);
 }
 
 function restartGame() {
@@ -37,11 +56,38 @@ function restartGame() {
     // потом продумаю логику перезапуска игры
 }
 
+function restartGame() {
+    document.getElementById('game-over').style.display = 'none';
+    // логика перезапуска игры
+}
+
+//собрать лидерборд
+function loadLeaderboard() {
+    const leaderboard = JSON.parse(localStorage.getItem('2048_leaderboard')) || [];
+    const tbody = document.getElementById('leaderboard-body');
+    
+    if (!tbody) return; //если элемента нет на странице, выходим
+    
+    if (leaderboard.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="no-records">Пока нет рекордов</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = leaderboard.map((record, index) => `
+        <tr>
+            <td>${index + 1}</td>
+            <td>${record.name}</td>
+            <td>${record.score}</td>
+            <td>${record.date}</td>
+        </tr>
+    `).join('');
+}
 
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('save-score-btn').addEventListener('click', saveScore);
     document.getElementById('restart-btn').addEventListener('click', restartGame);
     
+    loadLeaderboard();
     //пока что game over просто по таймеру чтобы посмотреть
     setTimeout(GameOver, 1000);
 });
