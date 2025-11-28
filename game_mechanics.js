@@ -53,7 +53,7 @@ function saveScore() {
 }
 
 function restartGame() {
-    document.getElementById('game-over').style.display = 'none';
+    const gameOverContainer = document.getElementById('game-over');
     if (gameOverContainer) {
         gameOverContainer.style.display = 'none';
     }
@@ -85,8 +85,8 @@ function loadLeaderboard() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('save-score-btn').addEventListener('click', saveScore);
-    document.getElementById('restart-btn').addEventListener('click', restartGame);
+    const saveBtn = document.getElementById('save-score-btn');
+    const restartBtn = document.getElementById('restart-btn');
     
     if (saveBtn) {
         saveBtn.addEventListener('click', saveScore);
@@ -98,9 +98,4 @@ document.addEventListener('DOMContentLoaded', function() {
     
     loadLeaderboard();
 
-    //таймер только если уже есть контейнер тк иначе не сохраняется лидерборд
-    const gameOverContainer = document.getElementById('game-over');
-    if (gameOverContainer) {
-        setTimeout(GameOver, 1000);
-    }
 });
