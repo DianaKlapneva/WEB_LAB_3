@@ -232,11 +232,26 @@ function moveDown() {
 }
 
 
-
-
-
-
-
+function checkGameOver() {
+    for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
+            if (grid[i][j] === 0) return false;
+        }
+    }
+    
+    for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
+            const current = grid[i][j];
+            if ((i < 3 && grid[i + 1][j] === current) ||
+                (j < 3 && grid[i][j + 1] === current)) {
+                return false;
+            }
+        }
+    }
+    
+    GameOver();
+    return true;
+}
 
 
 
