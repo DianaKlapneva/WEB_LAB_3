@@ -1,3 +1,66 @@
+let grid = [];
+let score = 0;
+let gameStarted = false;
+
+function initGame() {
+    grid = Array(4).fill().map(() => Array(4).fill(0));
+    score = 0;
+    gameStarted = true;
+    updateScore();
+    addRandomTile();
+    addRandomTile();
+    renderGrid();
+    showMobileControls();
+}
+
+
+function addRandomTile() {
+    const emptyCells = [];
+    for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
+            if (grid[i][j] === 0) {
+                emptyCells.push({i, j});
+            }
+        }
+    }
+    
+    if (emptyCells.length > 0) {
+        const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+        grid[randomCell.i][randomCell.j] = Math.random() < 0.9 ? 2 : 4;
+    }
+}
+
+function renderGrid() {
+    const gridContainer = document.querySelector('.grid-container');
+    gridContainer.innerHTML = '';
+    
+    for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
+            const cell = document.createElement('div');
+            cell.className = 'grid-cell';
+            
+            if (grid[i][j] !== 0) {
+                const tile = document.createElement('div');
+                tile.className = `tile tile-${grid[i][j]}`;
+                tile.textContent = grid[i][j];
+                tile.style.transform = `translate(${j * (100 + 10)}%, ${i * (100 + 10)}%)`;
+                cell.appendChild(tile);
+            }
+            
+            gridContainer.appendChild(cell);
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
 function GameOver() {
     const gameOverContainer = document.getElementById('game-over');
     if (!gameOverContainer) return;//если нет то выходим
@@ -154,5 +217,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     loadLeaderboard();
     showMobileControls();
+    initGame();
 
 });
