@@ -11,6 +11,7 @@ function GameOver() {
     saveBtn.textContent = 'Сохранить результат';
     
     gameOverContainer.style.display = 'flex';
+    hideMobileControls();
 }
 
 function saveScore() {
@@ -57,7 +58,7 @@ function restartGame() {
     if (gameOverContainer) {
         gameOverContainer.style.display = 'none';
     }
-    // потом продумаю логику перезапуска игры
+    showMobileControls();
 }
 
 
@@ -84,6 +85,50 @@ function loadLeaderboard() {
     `).join('');
 }
 
+
+
+//контроллеры и перемещение ячеек в целом
+function showMobileControls() {
+    const mobileControls = document.getElementById('mobile-controls');
+    if (mobileControls && window.innerWidth <= 768) {
+        mobileControls.classList.add('active');
+    }
+}
+
+function hideMobileControls() {
+    const mobileControls = document.getElementById('mobile-controls');
+    if (mobileControls) {
+        mobileControls.classList.remove('active');
+    }
+}
+
+//мобильные контроллеры
+function handleMobileControl(direction) {
+    // логика перемещения ячеек
+    console.log('Движение:', direction);
+    //двигаем
+}
+
+//десктопные штуки
+function handleKeyPress(event) {
+    if (window.innerWidth > 768) { 
+        const directions = {
+            'ArrowUp': 'up',
+            'ArrowDown': 'down', 
+            'ArrowLeft': 'left',
+            'ArrowRight': 'right'
+        };
+        
+        if (directions[event.key]) {
+            event.preventDefault();
+            // тут двигаем ячейки
+            console.log('Клавиша:', directions[event.key]);
+        }
+    }
+}
+
+
+
 document.addEventListener('DOMContentLoaded', function() {
     const saveBtn = document.getElementById('save-score-btn');
     const restartBtn = document.getElementById('restart-btn');
@@ -96,6 +141,18 @@ document.addEventListener('DOMContentLoaded', function() {
         restartBtn.addEventListener('click', restartGame);
     }
     
+
+    const controlButtons = document.querySelectorAll('.control-btn');
+    controlButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const direction = this.getAttribute('data-direction');
+            handleMobileControl(direction);
+        });
+    });
+
+    document.addEventListener('keydown', handleKeyPress);
+
     loadLeaderboard();
+    showMobileControls();
 
 });

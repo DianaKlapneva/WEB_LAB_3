@@ -1,3 +1,132 @@
+/* адаптивные стили */
+@media (max-width: 768px) {
+    .container {
+        max-width: 95%;
+        padding: 10px;
+    }
+    
+    h1 {
+        font-size: 40px;
+        margin: 10px 0;
+    }
+    
+    .score-container {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+    
+    .game-container {
+        padding: 10px;
+        margin-bottom: 15px;
+    }
+    
+    .game-over-message {
+        font-size: 20px;
+    }
+    
+    .name-input {
+        width: 180px;
+        font-size: 14px;
+    }
+    
+    .mobile-controls {
+        display: grid;
+        grid-template-areas: 
+            ". up ."
+            "left down right";
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 10px;
+        margin-top: 20px;
+        max-width: 200px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .control-btn {
+        width: 60px;
+        height: 60px;
+        background: #8f7a66;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 20px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+    
+    .control-btn:hover {
+        background: #7c6b5a;
+    }
+    
+    .control-up { grid-area: up; }
+    .control-left { grid-area: left; }
+    .control-down { grid-area: down; }
+    .control-right { grid-area: right; }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 32px;
+    }
+    
+    .score-container {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+    
+    .control-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 18px;
+    }
+    
+    .leaderboard-table th,
+    .leaderboard-table td {
+        padding: 8px 10px;
+        font-size: 14px;
+    }
+}
+
+/* изначально скрываем */
+.mobile-controls {
+    display: none;
+}
+
+/* только на мобильных */
+@media (max-width: 768px) {
+    .mobile-controls.active {
+        display: grid;
+    }
+}
+
+/* мобильгая табличка лидеров */
+@media (max-width: 480px) {
+    .leaderboard-table {
+        font-size: 12px;
+    }
+    
+    .leaderboard-table th,
+    .leaderboard-table td {
+        padding: 6px 8px;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .leaderboard-container {
     margin: 20px 0;
 }
