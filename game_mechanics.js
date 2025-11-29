@@ -52,6 +52,185 @@ function renderGrid() {
     }
 }
 
+//меняем колво очков
+function updateScore() {
+    const scoreElement = document.getElementById('score');
+    if (scoreElement) {
+        scoreElement.textContent = score;
+    }
+}
+
+//все по перемещению
+function move(direction) {
+    if (!gameStarted) return false;
+    
+    let moved = false;
+    
+    switch(direction) {
+        case 'left':
+            moved = moveLeft();
+            break;
+        case 'right':
+            moved = moveRight();
+            break;
+        case 'up':
+            moved = moveUp();
+            break;
+        case 'down':
+            moved = moveDown();
+            break;
+    }
+    
+    if (moved) {
+        addRandomTile();
+        renderGrid();
+        updateScore();
+        checkGameOver();
+    }
+    
+    return moved;
+}
+
+function moveLeft() {
+    let moved = false;
+    
+    for (let i = 0; i < 4; i++) {
+        const row = grid[i].filter(cell => cell !== 0);
+        const newRow = [];
+        
+        for (let j = 0; j < row.length; j++) {
+            if (j < row.length - 1 && row[j] === row[j + 1]) {
+                const mergedValue = row[j] * 2;
+                newRow.push(mergedValue);
+                score += mergedValue;
+                j++;
+            } else {
+                newRow.push(row[j]);
+            }
+        }
+        
+        while (newRow.length < 4) {
+            newRow.push(0);
+        }
+        
+        if (JSON.stringify(grid[i]) !== JSON.stringify(newRow)) {
+            moved = true;
+        }
+        
+        grid[i] = newRow;
+    }
+    
+    return moved;
+}
+
+function moveRight() {
+    let moved = false;
+    
+    for (let i = 0; i < 4; i++) {
+        const row = grid[i].filter(cell => cell !== 0);
+        const newRow = [];
+        
+        for (let j = row.length - 1; j >= 0; j--) {
+            if (j > 0 && row[j] === row[j - 1]) {
+                const mergedValue = row[j] * 2;
+                newRow.unshift(mergedValue);
+                score += mergedValue;
+                j--;
+            } else {
+                newRow.unshift(row[j]);
+            }
+        }
+        
+        while (newRow.length < 4) {
+            newRow.unshift(0);
+        }
+        
+        if (JSON.stringify(grid[i]) !== JSON.stringify(newRow)) {
+            moved = true;
+        }
+        
+        grid[i] = newRow;
+    }
+    
+    return moved;
+}
+
+function moveUp() {
+    let moved = false;
+    
+    for (let j = 0; j < 4; j++) {
+        const column = [];
+        for (let i = 0; i < 4; i++) {
+            if (grid[i][j] !== 0) {
+                column.push(grid[i][j]);
+            }
+        }
+        
+        const newColumn = [];
+        for (let i = 0; i < column.length; i++) {
+            if (i < column.length - 1 && column[i] === column[i + 1]) {
+                const mergedValue = column[i] * 2;
+                newColumn.push(mergedValue);
+                score += mergedValue;
+                i++;
+            } else {
+                newColumn.push(column[i]);
+            }
+        }
+        
+        while (newColumn.length < 4) {
+            newColumn.push(0);
+        }
+        
+        for (let i = 0; i < 4; i++) {
+            if (grid[i][j] !== newColumn[i]) {
+                moved = true;
+            }
+            grid[i][j] = newColumn[i];
+        }
+    }
+    
+    return moved;
+}
+
+function moveDown() {
+    let moved = false;
+    
+    for (let j = 0; j < 4; j++) {
+        const column = [];
+        for (let i = 3; i >= 0; i--) {
+            if (grid[i][j] !== 0) {
+                column.push(grid[i][j]);
+            }
+        }
+        
+        const newColumn = [];
+        for (let i = 0; i < column.length; i++) {
+            if (i < column.length - 1 && column[i] === column[i + 1]) {
+                const mergedValue = column[i] * 2;
+                newColumn.unshift(mergedValue);
+                score += mergedValue;
+                i++;
+            } else {
+                newColumn.unshift(column[i]);
+            }
+        }
+        
+        while (newColumn.length < 4) {
+            newColumn.unshift(0);
+        }
+        
+        for (let i = 0; i < 4; i++) {
+            if (grid[3 - i][j] !== newColumn[i]) {
+                moved = true;
+            }
+            grid[3 - i][j] = newColumn[i];
+        }
+    }
+    
+    return moved;
+}
+
 
 
 
