@@ -1,6 +1,7 @@
 let grid = [];
 let score = 0;
 let gameStarted = false;
+let previousStates = [];
 
 function initGame() {
     grid = Array(4).fill().map(() => Array(4).fill(0));
@@ -11,7 +12,37 @@ function initGame() {
     addRandomTile();
     renderGrid();
     showMobileControls();
+
+    //надо скрыть game over
+    const gameOverContainer = document.getElementById('game-over');
+    if (gameOverContainer) {
+        gameOverContainer.style.display = 'none';
+    }
 }
+
+//сохраняем состояния ячеек игры
+function saveState() {
+    previousStates.push({
+        grid: JSON.parse(JSON.stringify(grid)),
+        score: score
+    });
+    if (previousStates.length > 10) {
+        previousStates.shift();
+    }
+}
+
+//можно вернуться на шаг назад
+function undoMove() {
+    if (!gameStarted || previousStates.length === 0) return;
+    
+    const previousState = previousStates.pop();
+    grid = previousState.grid;
+    score = previousState.score;
+    updateScore();
+    renderGrid();
+}
+
+
 
 
 function addRandomTile() {
@@ -361,9 +392,7 @@ function hideMobileControls() {
 
 //мобильные контроллеры
 function handleMobileControl(direction) {
-    // логика перемещения ячеек
-    console.log('Движение:', direction);
-    //двигаем
+    move(direction);
 }
 
 //десктопные штуки
@@ -379,7 +408,14 @@ function handleKeyPress(event) {
         if (directions[event.key]) {
             event.preventDefault();
             // тут двигаем ячейки
-            console.log('Клавиша:', directions[event.key]);
+            move(directions[event.key]);
+        }
+
+
+        //отменяем
+        if (event.ctrlKey && event.key === 'z') {
+            event.preventDefault();
+            undoMove();
         }
     }
 }
@@ -398,6 +434,10 @@ document.addEventListener('DOMContentLoaded', function() {
         restartBtn.addEventListener('click', restartGame);
     }
     
+
+    if (undoBtn) {
+        undoBtn.addEventListener('click', undoMove);
+    }
 
     const controlButtons = document.querySelectorAll('.control-btn');
     controlButtons.forEach(button => {
