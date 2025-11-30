@@ -172,10 +172,13 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(4, 1fr);
-    gap: 10px;
+    gap: 8px;
     width: 100%;
     aspect-ratio: 1/1;
     position: relative;
+    background: #bbada0;
+    border-radius: 6px;
+    padding: 8px;
 }
 
 .grid-cell {
@@ -191,29 +194,33 @@
 
 .tile {
     position: absolute;
-    width: calc(100% - 4px);
-    height: calc(100% - 4px);
+    width: calc(100% - 8px);
+    height: calc(100% - 8px);
     display: flex;
     justify-content: center;
     align-items: center;
     font-weight: bold;
-    font-size: 5vw;
     border-radius: 3px;
     transition: all 0.1s ease-in-out;
-    margin: 2px;
+    margin: 4px;
+    font-size: 4vw;
 }
 
 @media (min-width: 768px) {
     .tile {
-        font-size: 35px;
+        font-size: 24px;
     }
 }
 
 @media (max-width: 480px) {
     .tile {
-        font-size: 6vw;
+        font-size: 5vw;
     }
 }
+
+
+
+
 
 .tile-2 { background: #eedae8ff; color: #776e65; }
 .tile-4 { background: #edc8d8ff; color: #776e65; }
@@ -227,14 +234,21 @@
 .tile-1024 { background: #ed8d3fff; color: #f9f6f2; font-size: 25px; }
 .tile-2048 { background: #f47215ff; color: #f9f6f2; font-size: 25px; }
 
-@media (max-width: 768px) {
-    .tile {
-        font-size: 25px;
-    }
+
+/* шрифт для больших чисел меньше*/
+.tile-128, .tile-256, .tile-512 {
+    font-size: 3.5vw !important;
+}
+
+.tile-1024, .tile-2048 {
+    font-size: 3vw !important;
+}
+
+@media (min-width: 768px) {
     .tile-128, .tile-256, .tile-512 {
-        font-size: 20px;
+        font-size: 20px !important;
     }
     .tile-1024, .tile-2048 {
-        font-size: 18px;
+        font-size: 18px !important;
     }
 }
