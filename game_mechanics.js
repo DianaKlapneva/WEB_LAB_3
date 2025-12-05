@@ -280,6 +280,7 @@ function checkGameOver() {
     for (let i = 0; i < 4; i++) {
         for (let j = 0; j < 4; j++) {
             const current = grid[i][j];
+            //проверяем ячейки справа и снизу
             if ((i < 3 && grid[i + 1][j] === current) ||
                 (j < 3 && grid[i][j + 1] === current)) {
                 return false;
@@ -428,6 +429,9 @@ document.addEventListener('DOMContentLoaded', function() {
         restartBtn.addEventListener('click', restartGame);
     }
     
+    if (newGameBtn) {
+        newGameBtn.addEventListener('click', restartGame);
+    }
 
     if (undoBtn) {
         undoBtn.addEventListener('click', undoMove);
