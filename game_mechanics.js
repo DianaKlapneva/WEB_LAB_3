@@ -420,6 +420,8 @@ function handleKeyPress(event) {
 document.addEventListener('DOMContentLoaded', function() {
     const saveBtn = document.getElementById('save-score-btn');
     const restartBtn = document.getElementById('restart-btn');
+    const newGameBtn = document.getElementById('new-game-btn');
+    const undoBtn = document.getElementById('undo-btn');
     
     if (saveBtn) {
         saveBtn.addEventListener('click', saveScore);
