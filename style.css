@@ -29,6 +29,31 @@
         font-size: 14px;
     }
     
+/*классы для всех остальных кнопок*/
+.buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    justify-content: center;
+}
+
+.buttons button {
+    background: #8f7a66;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.buttons button:hover {
+    background: #7c6b5a;
+}
+
+
+
     .mobile-controls {
         display: grid;
         grid-template-areas: 

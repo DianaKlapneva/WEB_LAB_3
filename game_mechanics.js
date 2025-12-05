@@ -7,6 +7,7 @@ function initGame() {
     grid = Array(4).fill().map(() => Array(4).fill(0));
     score = 0;
     gameStarted = true;
+    previousStates = [];
     updateScore();
     addRandomTile();
     addRandomTile();
@@ -95,7 +96,9 @@ function updateScore() {
 function move(direction) {
     if (!gameStarted) return false;
     
+    saveState();
     let moved = false;
+    const oldScore = score;
     
     switch(direction) {
         case 'left':
@@ -117,6 +120,9 @@ function move(direction) {
         renderGrid();
         updateScore();
         checkGameOver();
+    } else {
+        //если не было движения, убираем сохраненное состояние
+        previousStates.pop();
     }
     
     return moved;
@@ -264,12 +270,13 @@ function moveDown() {
 
 
 function checkGameOver() {
+    //это проверка на пустые клетки
     for (let i = 0; i < 4; i++) {
         for (let j = 0; j < 4; j++) {
             if (grid[i][j] === 0) return false;
         }
     }
-    
+    //это- на возможные ходы
     for (let i = 0; i < 4; i++) {
         for (let j = 0; j < 4; j++) {
             const current = grid[i][j];
@@ -318,35 +325,22 @@ function saveScore() {
     message.textContent = 'Ваш рекорд сохранен!';
     saveBtn.textContent = 'Сохранено';
     
-//cохраняем в localStorage!
-    const score = parseInt(document.getElementById('score').textContent) || 0;
     const record = {
         name: playerName,
         score: score,
         date: new Date().toLocaleString('ru-RU')
     };
     
-    //либо получаем текущий массив либо создаем, если пусто
     const leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
-
     leaderboard.push(record);
-    
-    //сортируем по убыванию
     const res = leaderboard.sort((a, b) => b.score - a.score);
-    
-    
-    // Сохраняем обратно в localStorage
     localStorage.setItem('leaderboard', JSON.stringify(res));
     
     console.log('Сохранен результат для:', playerName, ', результат:', score);
 }
 
 function restartGame() {
-    const gameOverContainer = document.getElementById('game-over');
-    if (gameOverContainer) {
-        gameOverContainer.style.display = 'none';
-    }
-    showMobileControls();
+    initGame();
 }
 
 
@@ -450,7 +444,6 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('keydown', handleKeyPress);
 
     loadLeaderboard();
-    showMobileControls();
     initGame();
 
 });
