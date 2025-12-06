@@ -235,9 +235,10 @@
 
 
 .tile {
+    border: 2px solid red !important;
     position: absolute;
-    width: calc(100% - 8px);
-    height: calc(100% - 8px);
+    width: 22%
+    height: 22%
     display: flex;
     justify-content: center;
     align-items: center;
@@ -246,17 +247,22 @@
     transition: all 0.1s ease-in-out;
     margin: 4px;
     font-size: 4vw;
+    z-index: 1;
 }
 
 @media (min-width: 768px) {
     .tile {
         font-size: 24px;
+        width: 22%;
+        height: 22%;
     }
 }
 
 @media (max-width: 480px) {
     .tile {
         font-size: 5vw;
+        width: 22%;
+        height: 22%;
     }
 }
 

@@ -9,6 +9,7 @@ function initGame() {
     gameStarted = true;
     previousStates = [];
     updateScore();
+
     addRandomTile();
     addRandomTile();
     renderGrid();
@@ -19,6 +20,8 @@ function initGame() {
     if (gameOverContainer) {
         gameOverContainer.style.display = 'none';
     }
+
+
 }
 
 //сохраняем состояния ячеек игры
@@ -75,7 +78,10 @@ function renderGrid() {
                 const tile = document.createElement('div');
                 tile.className = `tile tile-${grid[i][j]}`;
                 tile.textContent = grid[i][j];
-                tile.style.transform = `translate(${j * (100 + 10)}%, ${i * (100 + 10)}%)`;
+                const tileSize = 25;
+                const gap = 2; 
+                tile.style.left = `${j * tileSize + gap}%`;
+                tile.style.top = `${i * tileSize + gap}%`;
                 cell.appendChild(tile);
             }
             
@@ -94,7 +100,9 @@ function updateScore() {
 
 //все по перемещению
 function move(direction) {
-    if (!gameStarted) return false;
+    if (!gameStarted) {
+        return false;
+    }
     
     saveState();
     let moved = false;
