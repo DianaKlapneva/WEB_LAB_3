@@ -106,7 +106,7 @@ function move(direction) {
     
     saveState();
     let moved = false;
-    const oldScore = score;
+    
     
     switch(direction) {
         case 'left':
@@ -140,86 +140,112 @@ function moveLeft() {
     let moved = false;
     
     for (let i = 0; i < 4; i++) {
-        const row = grid[i].filter(cell => cell !== 0);
-        const newRow = [];
         
-        for (let j = 0; j < row.length; j++) {
-            if (j < row.length - 1 && row[j] === row[j + 1]) {
-                const mergedValue = row[j] * 2;
-                newRow.push(mergedValue);
-                score += mergedValue;
-                j++;
-            } else {
-                newRow.push(row[j]);
+        const newRow = [];
+        let previous = null;
+        let merged = false;
+        
+        //сначала все сдвигаем влево без слияния
+        for (let j = 0; j < 4; j++) {
+            if (grid[i][j] !== 0) {
+                if (previous === null) {
+                    //первая ненулевая плитка
+                    newRow.push(grid[i][j]);
+                    previous = grid[i][j];
+                } else if (!merged && previous === grid[i][j]) {
+                    //слияние если две одинаковые плитки рядом
+                    newRow[newRow.length - 1] = grid[i][j] * 2;
+                    score += grid[i][j] * 2;
+                    merged = true;
+                    //в этом ходу уже убрали эту плитку
+                } else {
+                    //разные плитки, значит продолжаем
+                    newRow.push(grid[i][j]);
+                    previous = grid[i][j];
+                    merged = false;
+                }
             }
         }
         
+        //добавим нули в конец
         while (newRow.length < 4) {
             newRow.push(0);
         }
         
+        //было ли движение?
         if (JSON.stringify(grid[i]) !== JSON.stringify(newRow)) {
             moved = true;
+            grid[i] = newRow;
         }
-        
-        grid[i] = newRow;
     }
     
     return moved;
 }
 
 function moveRight() {
-    let moved = false;
+let moved = false;
     
     for (let i = 0; i < 4; i++) {
-        const row = grid[i].filter(cell => cell !== 0);
         const newRow = [];
+        let previous = null;
+        let merged = false;
         
-        for (let j = row.length - 1; j >= 0; j--) {
-            if (j > 0 && row[j] === row[j - 1]) {
-                const mergedValue = row[j] * 2;
-                newRow.unshift(mergedValue);
-                score += mergedValue;
-                j--;
-            } else {
-                newRow.unshift(row[j]);
+        //сдвиг справа налево
+        for (let j = 3; j >= 0; j--) {
+            if (grid[i][j] !== 0) {
+                if (previous === null) {
+                    newRow.unshift(grid[i][j]);
+                    previous = grid[i][j];
+                } else if (!merged && previous === grid[i][j]) {
+                    //слияние справа налево
+                    newRow[0] = grid[i][j] * 2;
+                    score += grid[i][j] * 2;
+                    merged = true;
+                } else {
+                    newRow.unshift(grid[i][j]);
+                    previous = grid[i][j];
+                    merged = false;
+                }
             }
         }
         
+        //нули в начало
         while (newRow.length < 4) {
             newRow.unshift(0);
         }
         
         if (JSON.stringify(grid[i]) !== JSON.stringify(newRow)) {
             moved = true;
+            grid[i] = newRow;
         }
-        
-        grid[i] = newRow;
     }
     
     return moved;
 }
 
 function moveUp() {
-    let moved = false;
+        let moved = false;
     
     for (let j = 0; j < 4; j++) {
-        const column = [];
+        const newColumn = [];
+        let previous = null;
+        let merged = false;
+        
+        //сдвиг и слияние вверх
         for (let i = 0; i < 4; i++) {
             if (grid[i][j] !== 0) {
-                column.push(grid[i][j]);
-            }
-        }
-        
-        const newColumn = [];
-        for (let i = 0; i < column.length; i++) {
-            if (i < column.length - 1 && column[i] === column[i + 1]) {
-                const mergedValue = column[i] * 2;
-                newColumn.push(mergedValue);
-                score += mergedValue;
-                i++;
-            } else {
-                newColumn.push(column[i]);
+                if (previous === null) {
+                    newColumn.push(grid[i][j]);
+                    previous = grid[i][j];
+                } else if (!merged && previous === grid[i][j]) {
+                    newColumn[newColumn.length - 1] = grid[i][j] * 2;
+                    score += grid[i][j] * 2;
+                    merged = true;
+                } else {
+                    newColumn.push(grid[i][j]);
+                    previous = grid[i][j];
+                    merged = false;
+                }
             }
         }
         
@@ -227,6 +253,7 @@ function moveUp() {
             newColumn.push(0);
         }
         
+        //проверка и обновление колонки
         for (let i = 0; i < 4; i++) {
             if (grid[i][j] !== newColumn[i]) {
                 moved = true;
@@ -242,22 +269,25 @@ function moveDown() {
     let moved = false;
     
     for (let j = 0; j < 4; j++) {
-        const column = [];
+        const newColumn = [];
+        let previous = null;
+        let merged = false;
+        
+        //сдвиг+слияние вниз
         for (let i = 3; i >= 0; i--) {
             if (grid[i][j] !== 0) {
-                column.push(grid[i][j]);
-            }
-        }
-        
-        const newColumn = [];
-        for (let i = 0; i < column.length; i++) {
-            if (i < column.length - 1 && column[i] === column[i + 1]) {
-                const mergedValue = column[i] * 2;
-                newColumn.unshift(mergedValue);
-                score += mergedValue;
-                i++;
-            } else {
-                newColumn.unshift(column[i]);
+                if (previous === null) {
+                    newColumn.unshift(grid[i][j]);
+                    previous = grid[i][j];
+                } else if (!merged && previous === grid[i][j]) {
+                    newColumn[0] = grid[i][j] * 2;
+                    score += grid[i][j] * 2;
+                    merged = true;
+                } else {
+                    newColumn.unshift(grid[i][j]);
+                    previous = grid[i][j];
+                    merged = false;
+                }
             }
         }
         
@@ -265,6 +295,7 @@ function moveDown() {
             newColumn.unshift(0);
         }
         
+        //тоже обновляем колонку
         for (let i = 0; i < 4; i++) {
             if (grid[3 - i][j] !== newColumn[i]) {
                 moved = true;
