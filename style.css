@@ -215,12 +215,15 @@
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(4, 1fr);
     gap: 8px;
-    width: 100%;
+    width: 500px;
+    height: 500px; 
+    margin: 0 auto;
     aspect-ratio: 1/1;
     position: relative;
     background: #bbada0;
     border-radius: 6px;
-    padding: 8px
+    padding: 8px;
+    box-sizing: border-box;
 }
 
 .grid-cell {
@@ -271,6 +274,31 @@
         top: 5% !important;
         left: 5% !important;
     }
+
+    .grid-container {
+        max-width: 300px;
+    }
+
+    h1 {
+        font-size: 32px;
+        margin: 5px 0;
+    }
+
+    .score-container {
+        padding: 6px 12px;
+        font-size: 12px;
+        margin: 5px;
+    }
+
+    .buttons {
+        flex-wrap: wrap; 
+        gap: 8px;
+    }
+
+    .buttons button {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
 }
 
 
@@ -306,4 +334,21 @@
     .tile-1024, .tile-2048 {
         font-size: 18px !important;
     }
+
+    .container {
+        max-width: 800px; 
+        margin: 0 auto;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    .game-container {
+        max-width: 100%;
+        overflow: hidden;
+    }
+    
+    .leaderboard-container {
+        max-width: 100%;
+    }
+
 }
