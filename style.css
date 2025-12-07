@@ -235,7 +235,6 @@
 
 
 .tile {
-    border: 2px solid red !important;
     position: absolute;
     width: 90% !important;
     height: 90% !important;
