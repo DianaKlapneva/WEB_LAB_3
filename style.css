@@ -220,7 +220,7 @@
     position: relative;
     background: #bbada0;
     border-radius: 6px;
-    padding: 8px;
+    padding: 8px
 }
 
 .grid-cell {
@@ -237,32 +237,40 @@
 .tile {
     border: 2px solid red !important;
     position: absolute;
-    width: 22%
-    height: 22%
+    width: 90% !important;
+    height: 90% !important;
     display: flex;
     justify-content: center;
     align-items: center;
     font-weight: bold;
     border-radius: 3px;
     transition: all 0.1s ease-in-out;
-    margin: 4px;
+    margin: 0;
     font-size: 4vw;
     z-index: 1;
+    /* центрирую плитку в ячейке */
+    top: 5% !important;
+    left: 5% !important;
 }
 
 @media (min-width: 768px) {
     .tile {
         font-size: 24px;
-        width: 22%;
-        height: 22%;
+        width: 90% !important;
+        height: 90% !important;
+        top: 5% !important;
+        left: 5% !important;
+
     }
 }
 
 @media (max-width: 480px) {
     .tile {
         font-size: 5vw;
-        width: 22%;
-        height: 22%;
+        width: 90% !important;
+        height: 90% !important;
+        top: 5% !important;
+        left: 5% !important;
     }
 }
 
@@ -270,17 +278,17 @@
 
 
 
-.tile-2 { background: #eedae8ff; color: #776e65; }
-.tile-4 { background: #edc8d8ff; color: #776e65; }
-.tile-8 { background: #f2799fff; color: #f9f6f2; }
-.tile-16 { background: #f56383ff; color: #f9f6f2; }
-.tile-32 { background: #f65f8cff; color: #f9f6f2; }
-.tile-64 { background: #f63b73ff; color: #f9f6f2; }
-.tile-128 { background: #ed72a1ff; color: #f9f6f2; font-size: 30px; }
-.tile-256 { background: #fde233ff; color: #776e65; font-size: 30px; }
-.tile-512 { background: #ffc527ff; color: #776e65; font-size: 30px; }
-.tile-1024 { background: #ed8d3fff; color: #f9f6f2; font-size: 25px; }
-.tile-2048 { background: #f47215ff; color: #f9f6f2; font-size: 25px; }
+.tile-2 { background: #ffffffff; color: #776e65; }
+.tile-4 { background: #ff567eff; color: #776e65; }
+.tile-8 { background: #ff1f1fff; color: #f9f6f2; }
+.tile-16 { background: #ff6200ff; color: #f9f6f2; }
+.tile-32 { background: #f8ff37ff; color: #776e65; }
+.tile-64 { background: #59d600ff; color: #f9f6f2; }
+.tile-128 { background: #009037ff; color: #f9f6f2; font-size: 30px; }
+.tile-256 { background: #33b6fdff; color: #f9f6f2; font-size: 30px; }
+.tile-512 { background: #2740ffff; color: #f9f6f2; font-size: 30px; }
+.tile-1024 { background: #3e00b2ff; color: #f9f6f2; font-size: 25px; }
+.tile-2048 { background: #66005aff; color: #f9f6f2; font-size: 25px; }
 
 
 /* шрифт для больших чисел меньше*/
