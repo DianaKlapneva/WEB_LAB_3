@@ -363,43 +363,26 @@ function moveDown() {
     let moved = false;
     
     for (let j = 0; j < 4; j++) {
-        //новый массив для колонки
-        const newColumn = [];
-        let previous = null;
-        let merged = false;
-        
-        //снизу вверх итерация
-        for (let i = 3; i >= 0; i--) {
-            if (grid[i][j] !== 0) {
-                if (previous === null) {
-                    //первая ненулевая плитка
-                    newColumn.unshift(grid[i][j]);
-                    previous = grid[i][j];
-                } else if (!merged && previous === grid[i][j]) {
-                    //слияние двух одинаковых плиток
-                    newColumn[0] = grid[i][j] * 2;
-                    score += grid[i][j] * 2;
-                    merged = true;
-                } else {
-                    //если разные плитки
-                    newColumn.unshift(grid[i][j]);
-                    previous = grid[i][j];
-                    merged = false;
+        //проходим колонку снизу вверх 3 раза для полного смещения
+        for (let pass = 0; pass < 3; pass++) {
+            for (let i = 2; i >= 0; i--) {
+                if (grid[i][j] !== 0) {
+                    //ячейка ниже пустая - смещаем
+                    if (grid[i + 1][j] === 0) {
+                        grid[i + 1][j] = grid[i][j];
+                        grid[i][j] = 0;
+                        moved = true;
+                    }
+                    //если ячейка ниже имеет то же значение и не была слита в этом ходу
+                    else if (grid[i + 1][j] === grid[i][j]) {
+                        grid[i + 1][j] *= 2;
+                        score += grid[i + 1][j];
+                        grid[i][j] = 0;
+                        moved = true;
+                        //после слияния пропускаем эту пару
+                        break;
+                    }
                 }
-            }
-        }
-        
-        //добавляем нули в начало
-        while (newColumn.length < 4) {
-            newColumn.unshift(0);
-        }
-        
-        //правильно обновляем колонку - newcolumn[0] - верх, newcolumn[3] - низ
-        for (let i = 0; i < 4; i++) {
-            const rowIndex = 3 - i; // меняем индекс!
-            if (grid[rowIndex][j] !== newColumn[i]) {
-                moved = true;
-                grid[rowIndex][j] = newColumn[i];
             }
         }
     }
