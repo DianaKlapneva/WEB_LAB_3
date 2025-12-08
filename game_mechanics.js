@@ -35,6 +35,69 @@ function saveState() {
     }
 }
 
+
+
+
+
+function saveGameState() {
+    if (!gameStarted) return;
+    
+    const gameState = {
+        grid: grid,
+        score: score,
+        previousStates: previousStates,
+        timestamp: Date.now()
+    };
+    
+    localStorage.setItem('2048_game_state', JSON.stringify(gameState));
+    console.log('Игра сохранена');
+}
+
+//сохраняем по новому из localstorage
+function loadGameState() {
+    const savedState = localStorage.getItem('2048_game_state');
+    
+    if (!savedState) {
+        console.log('Нет сохраненной игры');
+        return false;
+    }
+    
+    try {
+        const state = JSON.parse(savedState);
+        
+        
+        grid = state.grid;
+        score = state.score;
+        previousStates = state.previousStates || [];
+        
+
+        updateScore();
+        renderGrid();
+        gameStarted = true;
+        
+        console.log('Игра загружена');
+        return true;
+        
+    } catch (error) {
+        console.error('Ошибка загрузки игры:', error);
+        localStorage.removeItem('2048_game_state');
+        return false;
+    }
+}
+
+function clearGameState() {
+    localStorage.removeItem('2048_game_state');
+    console.log('Сохранение очищено');
+}
+
+
+
+
+
+
+
+
+
 //можно вернуться на шаг назад
 function undoMove() {
     if (!gameStarted || previousStates.length === 0) return;
@@ -44,9 +107,35 @@ function undoMove() {
     score = previousState.score;
     updateScore();
     renderGrid();
+    saveGameState();
 }
 
+//все про автосохранение игры
+window.addEventListener('beforeunload', function() {
+    if (gameStarted) {
+        saveGameState();
+    }
+});
 
+//автосохранение каждую минуту
+setInterval(function() {
+    if (gameStarted) {
+        saveGameState();
+    }
+}, 60000);
+
+
+//инициируем сохраненнйю игру
+function initGameWithSaveCheck() {
+    const savedGame = loadGameState();
+    
+    if (savedGame) {
+        showMobileControls();
+        
+    } else {
+        initGame();
+    }
+}
 
 
 function addRandomTile() {
@@ -128,6 +217,7 @@ function move(direction) {
         renderGrid();
         updateScore();
         checkGameOver();
+        saveGameState();
     } else {
         //если не было движения, убираем сохраненное состояние
         previousStates.pop();
@@ -347,6 +437,7 @@ function GameOver() {
     
     gameOverContainer.style.display = 'flex';
     hideMobileControls();
+    clearGameState();
 }
 
 function saveScore() {
@@ -375,12 +466,14 @@ function saveScore() {
     leaderboard.push(record);
     const res = leaderboard.sort((a, b) => b.score - a.score);
     localStorage.setItem('leaderboard', JSON.stringify(res));
-    
+    clearGameState();
     console.log('Сохранен результат для:', playerName, ', результат:', score);
 }
 
 function restartGame() {
+    clearGameState();
     initGame();
+
 }
 
 
@@ -489,6 +582,6 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('keydown', handleKeyPress);
 
     loadLeaderboard();
-    initGame();
+    initGameWithSaveCheck();
 
 });
