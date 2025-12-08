@@ -58,14 +58,17 @@ function loadGameState() {
     const savedState = localStorage.getItem('2048_game_state');
     
     if (!savedState) {
-        console.log('Нет сохраненной игры');
         return false;
     }
     
     try {
         const state = JSON.parse(savedState);
         
-        
+        if (isGameOverState(state.grid)) {
+            clearGameState();
+            return false;
+        }
+
         grid = state.grid;
         score = state.score;
         previousStates = state.previousStates || [];
@@ -75,19 +78,38 @@ function loadGameState() {
         renderGrid();
         gameStarted = true;
         
-        console.log('Игра загружена');
         return true;
         
     } catch (error) {
-        console.error('Ошибка загрузки игры:', error);
         localStorage.removeItem('2048_game_state');
         return false;
     }
 }
 
+//то же самое, что CheckGameOver на самом деле но иначе он вызывает Gameover при загрузке...
+function isGameOverState(savedGrid) {
+
+    for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
+            if (savedGrid[i][j] === 0) return false;
+        }
+    }
+
+    for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
+            const current = savedGrid[i][j];
+            if ((i < 3 && savedGrid[i + 1][j] === current) ||
+                (j < 3 && savedGrid[i][j + 1] === current)) {
+                return false;
+            }
+        }
+    }
+    
+    return true;
+}
+
 function clearGameState() {
     localStorage.removeItem('2048_game_state');
-    console.log('Сохранение очищено');
 }
 
 
