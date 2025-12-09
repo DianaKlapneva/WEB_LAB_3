@@ -1,3 +1,68 @@
+//все про анимации
+let animations = {
+    newTiles: [],     
+    mergedTiles: [],
+    movedTiles: []     
+};
+
+function resetAnimations() {
+    animations = {
+        newTiles: [],
+        mergedTiles: [],
+        movedTiles: []
+    };
+}
+
+//помечаем плитку для анимации
+function markTileForAnimation(type, fromRow, fromCol, toRow, toCol, value) {
+    animations[type].push({
+        from: { row: fromRow, col: fromCol },
+        to: { row: toRow, col: toCol },
+        value: value
+    });
+}
+
+
+
+function isNewTile(row, col) {
+    return newTiles.some(tile => tile.row === row && tile.col === col);
+}
+
+function isMergedTile(row, col) {
+    return mergedTiles.some(tile => tile.row === row && tile.col === col);
+}
+
+function getMoveAnimationForTile(row, col) {
+    const move = movedTiles.find(tile => 
+        tile.toRow === row && tile.toCol === col
+    );
+    if (move) {
+        return {
+            fromRow: move.fromRow,
+            fromCol: move.fromCol,
+            direction: getDirection(move.fromRow, move.fromCol, row, col)
+        };
+    }
+    return null;
+}
+//направления для анимации
+function getDirection(fromRow, fromCol, toRow, toCol) {
+    if (fromRow < toRow) return 'down';
+    if (fromRow > toRow) return 'up';
+    if (fromCol < toCol) return 'right';
+    if (fromCol > toCol) return 'left';
+    return 'none';
+}
+
+function clearAnimationLists() {
+    newTiles = [];
+    mergedTiles = [];
+    movedTiles = [];
+}
+
+
+
+
 let grid = [];
 let score = 0;
 let gameStarted = false;
@@ -157,7 +222,7 @@ function addRandomTile() {
     }
 }
 
-function renderGrid() {
+function renderGrid(withAnimations = true) {
     const gridContainer = document.querySelector('.grid-container');
     gridContainer.innerHTML = '';
     
@@ -170,15 +235,47 @@ function renderGrid() {
                 const tile = document.createElement('div');
                 tile.className = `tile tile-${grid[i][j]}`;
                 tile.textContent = grid[i][j];
+                tile.id = `tile-${i}-${j}`; //id для плитки 
+                
                 const tileSize = 25;
                 const gap = 2; 
                 tile.style.left = `${j * tileSize + gap}%`;
                 tile.style.top = `${i * tileSize + gap}%`;
+                
+                //про анимации
+                if (withAnimations) {
+                    if (isNewTile(i, j)) {
+                        tile.classList.add('tile-new');
+                    }
+                    
+                    if (isMergedTile(i, j)) {
+                        tile.classList.add('tile-merged');
+                    }
+                    
+                    const moveAnimation = getMoveAnimationForTile(i, j);
+                    if (moveAnimation) {
+                        tile.classList.add(`tile-slide-${moveAnimation.direction}`);
+                        tile.style.top = `${moveAnimation.fromRow * tileSize + gap}%`;
+                        tile.style.left = `${moveAnimation.fromCol * tileSize + gap}%`;
+                        
+                        setTimeout(() => {
+                            tile.style.top = `${i * tileSize + gap}%`;
+                            tile.style.left = `${j * tileSize + gap}%`;
+                        }, 10);
+                    }
+                }               
                 cell.appendChild(tile);
             }
             
             gridContainer.appendChild(cell);
         }
+    }
+    
+    //очистка анимации
+    if (withAnimations) {
+        setTimeout(() => {
+            clearAnimationLists();
+        }, 300);
     }
 }
 
