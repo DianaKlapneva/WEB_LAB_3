@@ -458,7 +458,8 @@ function saveScore() {
     const leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
     leaderboard.push(record);
     const res = leaderboard.sort((a, b) => b.score - a.score);
-    localStorage.setItem('leaderboard', JSON.stringify(res));
+    const top10 = res.slice(0, 10)
+    localStorage.setItem('leaderboard', JSON.stringify(top10));
     clearGameState();
     console.log('Сохранен результат для:', playerName, ', результат:', score);
 }
@@ -478,7 +479,12 @@ function loadLeaderboard() {
     
     if (!tbody) return; //если элемента нет на странице, выходим
     
-    if (leaderboard.length === 0) {
+    const top10 = leaderboard
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 10);
+
+
+    if (top10.length === 0) {
         tbody.innerHTML = '<tr><td colspan="4" class="no-records">Пока нет рекордов</td></tr>';
         return;
     }
