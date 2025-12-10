@@ -3,74 +3,6 @@ let score = 0;
 let gameStarted = false;
 let previousStates = [];
 
-//все про анимации
-
-let animationState = {
-    newTiles: [],    // Новые плитки
-    mergedTiles: [], // Слитые плитки  
-    movedTiles: []   // Перемещенные плитки
-};
-
-//сброс анимации
-function resetAnimations() {
-    animationState = {
-        newTiles: [],
-        mergedTiles: [],
-        movedTiles: []
-    };
-}
-
-//пометить плитку для анимации
-function markTileForAnimation(type, row, col) {
-    animationState[type].push({ row, col });
-}
-
-// Проверка, есть ли анимация для плитки
-function hasAnimation(type, row, col) {
-    return animationState[type].some(tile => tile.row === row && tile.col === col);
-}
-
-
-function isNewTile(row, col) {
-    return newTiles.some(tile => tile.row === row && tile.col === col);
-}
-
-function isMergedTile(row, col) {
-    return mergedTiles.some(tile => tile.row === row && tile.col === col);
-}
-
-function getMoveAnimationForTile(row, col) {
-    const move = movedTiles.find(tile => 
-        tile.toRow === row && tile.toCol === col
-    );
-    if (move) {
-        return {
-            fromRow: move.fromRow,
-            fromCol: move.fromCol,
-            direction: getDirection(move.fromRow, move.fromCol, row, col)
-        };
-    }
-    return null;
-}
-//направления для анимации
-function getDirection(fromRow, fromCol, toRow, toCol) {
-    if (fromRow < toRow) return 'down';
-    if (fromRow > toRow) return 'up';
-    if (fromCol < toCol) return 'right';
-    if (fromCol > toCol) return 'left';
-    return 'none';
-}
-
-function clearAnimationLists() {
-    newTiles = [];
-    mergedTiles = [];
-    movedTiles = [];
-}
-
-
-
-
-
 function initGame() {
     grid = Array(4).fill().map(() => Array(4).fill(0));
     score = 0;
@@ -222,12 +154,10 @@ function addRandomTile() {
     if (emptyCells.length > 0) {
         const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
         grid[randomCell.i][randomCell.j] = Math.random() < 0.9 ? 2 : 4;
-        return {i: randomCell.i, j: randomCell.j}; //возвращаем позицию плитки
     }
-    return null;
 }
 
-function renderGrid(withAnimations = true) {
+function renderGrid() {
     const gridContainer = document.querySelector('.grid-container');
     gridContainer.innerHTML = '';
     
@@ -242,36 +172,14 @@ function renderGrid(withAnimations = true) {
                 tile.textContent = grid[i][j];
                 const tileSize = 25;
                 const gap = 2; 
-                
-                //позиционирование
                 tile.style.left = `${j * tileSize + gap}%`;
                 tile.style.top = `${i * tileSize + gap}%`;
-                
-                //анимации
-                if (hasAnimation('newTiles', i, j)) {
-                    tile.classList.add('tile-new');
-                }
-                
-                if (hasAnimation('mergedTiles', i, j)) {
-                    tile.classList.add('tile-merged');
-                }
-                
-                if (hasAnimation('movedTiles', i, j)) {
-                    const direction = getAnimationDirection(i, j);
-                    tile.classList.add(`tile-slide-${direction}`);
-                }
-                
                 cell.appendChild(tile);
             }
             
             gridContainer.appendChild(cell);
         }
     }
-    
-    //сбрасываем анимации
-    setTimeout(() => {
-        resetAnimations();
-    }, 300);
 }
 
 //меняем колво очков
@@ -284,15 +192,13 @@ function updateScore() {
 
 //все по перемещению
 function move(direction) {
-     if (!gameStarted) {
+    if (!gameStarted) {
         return false;
     }
     
     saveState();
     let moved = false;
     
-    //сбрасываем анимации перед новым ходом
-    resetAnimations();
     
     switch(direction) {
         case 'left':
@@ -310,20 +216,14 @@ function move(direction) {
     }
     
     if (moved) {
-        //добавляем новую плитку и отмечаем ее для анимации!
-        const newTilePos = addRandomTile();
-        if (newTilePos) {
-            markTileForAnimation('newTiles', newTilePos.i, newTilePos.j);
-        }
-        
+        addRandomTile();
         renderGrid();
         updateScore();
         checkGameOver();
         saveGameState();
     } else {
-        //если не было движения -сбрасываем последнее состояние
+        //если не было движения, убираем сохраненное состояние
         previousStates.pop();
-        renderGrid();
     }
     
     return moved;
@@ -463,24 +363,25 @@ function moveDown() {
     let moved = false;
     
     for (let j = 0; j < 4; j++) {
-        //сначала все слияния!
-        for (let i = 2; i >= 0; i--) {
-            if (grid[i][j] !== 0 && grid[i][j] === grid[i + 1][j]) {
-                grid[i + 1][j] *= 2;
-                score += grid[i + 1][j];
-                grid[i][j] = 0;
-                moved = true;
-            }
-        }
-        
-        //потом все смещения
+        //проходим колонку снизу вверх 3 раза для полного смещения
         for (let pass = 0; pass < 3; pass++) {
             for (let i = 2; i >= 0; i--) {
-                if (grid[i][j] !== 0 && grid[i + 1][j] === 0) {
-                    //смещение
-                    grid[i + 1][j] = grid[i][j];
-                    grid[i][j] = 0;
-                    moved = true;
+                if (grid[i][j] !== 0) {
+                    //ячейка ниже пустая - смещаем
+                    if (grid[i + 1][j] === 0) {
+                        grid[i + 1][j] = grid[i][j];
+                        grid[i][j] = 0;
+                        moved = true;
+                    }
+                    //если ячейка ниже имеет то же значение и не была слита в этом ходу
+                    else if (grid[i + 1][j] === grid[i][j]) {
+                        grid[i + 1][j] *= 2;
+                        score += grid[i + 1][j];
+                        grid[i][j] = 0;
+                        moved = true;
+                        //после слияния пропускаем эту пару
+                        break;
+                    }
                 }
             }
         }
