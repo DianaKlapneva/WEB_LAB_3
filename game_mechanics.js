@@ -3,31 +3,6 @@ let score = 0;
 let gameStarted = false;
 let previousStates = [];
 
-
-
-let animationState = {
-    newTiles: [],
-    mergedTiles: []   
-};
-
-function resetAnimations() {
-    animationState = {
-        newTiles: [],
-        mergedTiles: []
-    };
-}
-
-function markTileForAnimation(type, row, col) {
-    animationState[type].push({ row, col });
-}
-
-function hasAnimation(type, row, col) {
-    return animationState[type].some(tile => tile.row === row && tile.col === col);
-}
-
-
-
-
 function initGame() {
     grid = Array(4).fill().map(() => Array(4).fill(0));
     score = 0;
@@ -179,7 +154,6 @@ function addRandomTile() {
     if (emptyCells.length > 0) {
         const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
         grid[randomCell.i][randomCell.j] = Math.random() < 0.9 ? 2 : 4;
-        return {i: randomCell.i, j: randomCell.j};
     }
 }
 
@@ -200,22 +174,12 @@ function renderGrid() {
                 const gap = 2; 
                 tile.style.left = `${j * tileSize + gap}%`;
                 tile.style.top = `${i * tileSize + gap}%`;
-                if (hasAnimation('newTiles', i, j)) {
-                    tile.classList.add('tile-new'); //появление
-                }
-                
-                if (hasAnimation('mergedTiles', i, j)) {
-                    tile.classList.add('tile-merged'); //слияние
-                }
                 cell.appendChild(tile);
             }
             
             gridContainer.appendChild(cell);
         }
     }
-    setTimeout(() => {
-        resetAnimations();
-    }, 300);
 }
 
 //меняем колво очков
@@ -235,7 +199,6 @@ function move(direction) {
     saveState();
     let moved = false;
     
-    resetAnimations();
     
     switch(direction) {
         case 'left':
@@ -253,10 +216,7 @@ function move(direction) {
     }
     
     if (moved) {
-        const newTilePos = addRandomTile();
-        if (newTilePos) {
-            markTileForAnimation('newTiles', newTilePos.i, newTilePos.j);
-        }
+        addRandomTile();
         renderGrid();
         updateScore();
         checkGameOver();
@@ -264,7 +224,6 @@ function move(direction) {
     } else {
         //если не было движения, убираем сохраненное состояние
         previousStates.pop();
-        renderGrid();
     }
     
     return moved;
@@ -290,8 +249,8 @@ function moveLeft() {
                     //слияние если две одинаковые плитки рядом
                     newRow[newRow.length - 1] = grid[i][j] * 2;
                     score += grid[i][j] * 2;
-                    markTileForAnimation('mergedTiles', i, newRow.length - 1);
                     merged = true;
+                    //в этом ходу уже убрали эту плитку
                 } else {
                     //разные плитки, значит продолжаем
                     newRow.push(grid[i][j]);
@@ -334,7 +293,6 @@ let moved = false;
                     //слияние справа налево
                     newRow[0] = grid[i][j] * 2;
                     score += grid[i][j] * 2;
-                    markTileForAnimation('mergedTiles', i, 0);
                     merged = true;
                 } else {
                     newRow.unshift(grid[i][j]);
@@ -375,7 +333,6 @@ function moveUp() {
                 } else if (!merged && previous === grid[i][j]) {
                     newColumn[newColumn.length - 1] = grid[i][j] * 2;
                     score += grid[i][j] * 2;
-                    markTileForAnimation('mergedTiles', newColumn.length - 1, j);
                     merged = true;
                 } else {
                     newColumn.push(grid[i][j]);
@@ -406,8 +363,6 @@ function moveDown() {
     let moved = false;
     
     for (let j = 0; j < 4; j++) {
-        //смотрим, какие ячейки уже слились
-        
         //проходим колонку снизу вверх 3 раза для полного смещения
         for (let pass = 0; pass < 3; pass++) {
             for (let i = 2; i >= 0; i--) {
@@ -422,7 +377,6 @@ function moveDown() {
                     else if (grid[i + 1][j] === grid[i][j]) {
                         grid[i + 1][j] *= 2;
                         score += grid[i + 1][j];
-                        markTileForAnimation('mergedTiles', i + 1, j);
                         grid[i][j] = 0;
                         moved = true;
                         //после слияния пропускаем эту пару
