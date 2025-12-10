@@ -235,7 +235,7 @@ function move(direction) {
     saveState();
     let moved = false;
     
-    resetAnimation();
+    resetAnimations();
     
     switch(direction) {
         case 'left':
