@@ -1,3 +1,36 @@
+.buttons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.button {
+    background: #8f7a66;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    min-width: 140px;
+    box-shadow: 0 4px 0 #424542ff;
+    position: relative;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+
+
+
 /* адаптивные стили */
 @media (max-width: 768px) {
     .container {
@@ -46,42 +79,7 @@
         font-size: 14px;
     }
     
-/*классы для всех остальных кнопок*/
-.buttons {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 25px;
-    justify-content: center;
-    flex-wrap: wrap;
-}
 
-.button {
-    background: #8f7a66;
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 6px;
-    font-size: 16px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: all 0.2s ease;
-    min-width: 140px;
-    box-shadow: 0 4px 0 #424542ff;
-    position: relative;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    font-size: 16px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.button:hover {
-    background: #424542fff;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 0 #151615ff;
-}
 
 
 
