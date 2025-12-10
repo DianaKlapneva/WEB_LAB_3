@@ -10,7 +10,7 @@ let animationState = {
     mergedTiles: []   
 };
 
-function resetAnimation() {
+function resetAnimations() {
     animationState = {
         newTiles: [],
         mergedTiles: []
@@ -179,6 +179,7 @@ function addRandomTile() {
     if (emptyCells.length > 0) {
         const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
         grid[randomCell.i][randomCell.j] = Math.random() < 0.9 ? 2 : 4;
+        return {i: randomCell.i, j: randomCell.j};
     }
 }
 
@@ -403,49 +404,32 @@ function moveUp() {
 
 function moveDown() {
     let moved = false;
-    const gridCopy = JSON.parse(JSON.stringify(grid)); //делаем коипю на всякий случай..
     
     for (let j = 0; j < 4; j++) {
-        const newColumn = [];
-        let previous = null;
-        let merged = false;
+        //смотрим, какие ячейки уже слились
         
-        //собираем все плитки в колонке снизу вверх
-        for (let i = 3; i >= 0; i--) {
-            if (gridCopy[i][j] !== 0) {
-                if (previous === null) {
-                    //первая ненулевая плитка
-                    newColumn.unshift(gridCopy[i][j]);
-                    previous = gridCopy[i][j];
-                } else if (!merged && previous === gridCopy[i][j]) {
-                    //слияние
-                    newColumn[0] = gridCopy[i][j] * 2;
-                    score += gridCopy[i][j] * 2;
-                    
-                    markTileForAnimation('mergedTiles', 0, j);
-                    
-                    merged = true;
-                } else {
-                    //если разные плитки
-                    newColumn.unshift(gridCopy[i][j]);
-                    previous = gridCopy[i][j];
-                    merged = false;
+        //проходим колонку снизу вверх 3 раза для полного смещения
+        for (let pass = 0; pass < 3; pass++) {
+            for (let i = 2; i >= 0; i--) {
+                if (grid[i][j] !== 0) {
+                    //ячейка ниже пустая - смещаем
+                    if (grid[i + 1][j] === 0) {
+                        grid[i + 1][j] = grid[i][j];
+                        grid[i][j] = 0;
+                        moved = true;
+                    }
+                    //если ячейка ниже имеет то же значение и не была слита в этом ходу
+                    else if (grid[i + 1][j] === grid[i][j]) {
+                        grid[i + 1][j] *= 2;
+                        score += grid[i + 1][j];
+                        markTileForAnimation('mergedTiles', i + 1, j);
+                        grid[i][j] = 0;
+                        moved = true;
+                        //после слияния пропускаем эту пару
+                        break;
+                    }
                 }
             }
-        }
-        
-        //добавляем нули сверху
-        while (newColumn.length < 4) {
-            newColumn.unshift(0);
-        }
-        
-        //обновляем колонку в обратном порядке
-        for (let i = 3; i >= 0; i--) {
-            const newValue = newColumn[3 - i];
-            if (grid[i][j] !== newValue) {
-                moved = true;
-            }
-            grid[i][j] = newValue;
         }
     }
     
