@@ -1,3 +1,53 @@
+.game-title {
+    font-family: 'Arial Rounded MT Bold', 'Arial', sans-serif;
+    font-size: 3.5rem;
+    font-weight: bold;
+    color: #776e65;
+    margin: 10px 0 20px 0;
+    text-align: center;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+    letter-spacing: 1px;
+}
+
+.score-title {
+    font-family: 'Arial Rounded MT Bold', 'Arial', sans-serif;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #776e65;
+    background-color: #bbada0;
+    padding: 10px 20px;
+    border-radius: 6px;
+    display: inline-block;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.score-title #score {
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 1.8rem;
+}
+
+@media (max-width: 768px) {
+    .game-title {
+        font-size: 2.5rem;
+        margin: 5px 0 15px 0;
+    }
+    
+    .score-title {
+        font-size: 1.2rem;
+        padding: 8px 16px;
+        margin-bottom: 15px;
+    }
+    
+    .score-title #score {
+        font-size: 1.5rem;
+    }
+    
+}
+
+
+
 .buttons {
     display: flex;
     gap: 15px;
