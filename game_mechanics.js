@@ -447,7 +447,7 @@ function saveScore() {
 
     nameInput.style.display = 'none';
     message.textContent = 'Ваш рекорд сохранен!';
-    saveBtn.textContent = 'Сохранено';
+    
     
     const record = {
         name: playerName,
@@ -461,7 +461,7 @@ function saveScore() {
     const top10 = res.slice(0, 10)
     localStorage.setItem('leaderboard', JSON.stringify(top10));
     clearGameState();
-    console.log('Сохранен результат для:', playerName, ', результат:', score);
+    
 }
 
 function restartGame() {
