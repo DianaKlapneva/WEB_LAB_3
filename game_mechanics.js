@@ -422,12 +422,15 @@ function GameOver() {
     const message = document.getElementById('game-over-message');
     const nameInput = document.getElementById('player-name');
     const saveBtn = document.getElementById('save-score-btn');
-    
+    const newGameBtn = document.getElementById('new-game-btn');
+
     message.textContent = 'Игра окончена! Введите ваше имя:';
     nameInput.style.display = 'block';
     nameInput.value = '';
+    saveBtn.style.display = 'inline-block';
     saveBtn.textContent = 'Сохранить результат';
-    
+    newGameBtn.style.display = 'inline-block';
+
     gameOverContainer.style.display = 'flex';
     hideMobileControls();
     clearGameState();
@@ -438,7 +441,8 @@ function saveScore() {
     const message = document.getElementById('game-over-message');
     const nameInput = document.getElementById('player-name');
     const saveBtn = document.getElementById('save-score-btn');
-    
+    const newGameBtn = document.getElementById('new-game-btn');
+
     if (playerName === '') {
         alert('Пожалуйста, введите ваше имя');
         return;
@@ -446,6 +450,8 @@ function saveScore() {
     
 
     nameInput.style.display = 'none';
+    saveBtn.style.display = 'none';
+    newGameBtn.style.display = 'inline-block';
     message.textContent = 'Ваш рекорд сохранен!';
     
     
